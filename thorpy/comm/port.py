@@ -46,7 +46,7 @@ class Port:
         self.send_message(MGMSG_HW_STOP_UPDATEMSGS())
         time.sleep(0.5)
         self._serial.reset_input_buffer()
-        
+
         self._info_message = None
         while self._info_message is None:
             self.send_message(MGMSG_HW_REQ_INFO())
@@ -54,11 +54,7 @@ class Port:
                 self._info_message = self._recv_message(blocking = True)
             except: # TODO: Be more specific on what we catch here
                 self._buffer = b''
-                #Flush port if needed
-                old_timeout = self._serial.timeout
-                self._serial.setTimeout(1)
-                self._serial.read(1024)
-                self._serial.setTimeout(old_timeout)                
+                self._serial.flushInput()
                 
         self._serial_number = int(sn)
         if self._serial_number is None:
